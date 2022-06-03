@@ -7,6 +7,8 @@ from donuts import update_donuts
 from gamestats import GameStats, Scoreboard, check_high_score, check_level_up
 from button import Button
 
+""" sosos"""
+
 
 def check_collisions(stats, corgi, donuts, bullets, crabs, sb):
     pygame.sprite.groupcollide(bullets, crabs, True, True)
