@@ -36,19 +36,37 @@ def pickup(m, g_class, ai_m):
 
 
 def save(m, g_class, ai_m):
-    with open('saveplayerdata.pickle', 'wb') as f:
-        pickle.dump([g_class, g_class.name, g_class.hp], f, protocol=pickle.HIGHEST_PROTOCOL)
-    with open('saveworlddata.pickle', 'wb') as f:
-        pickle.dump(m.state, f, protocol=pickle.HIGHEST_PROTOCOL)
+    enemies = m.get_enemies()
+    if len(enemies) > 0:
+        print("You can not save if there are enemies on your field")
+    else:
+        player_pickle = open('saveplayerdata.pickle', 'wb')
+        pickle.dump(g_class, player_pickle)
+        player_pickle.close()
+        map_pickle = open('savemapdata.pickle', 'wb')
+        pickle.dump(m, map_pickle)
+        map_pickle.close()
+        ai_map_pickle = open('saveaimapdata.pickle', 'wb')
+        pickle.dump(ai_m, ai_map_pickle)
+        ai_map_pickle.close()
+        print("You have successfully saved!")
 
 
 def load(m, g_class, ai_m):
-    # ich weiß nicht, mal schauen später
-
-    with open('saveplayerdata.pickle', 'rb') as f:
-        g_class, g_class.hp, g_class.name = pickle.load(f)
-    with open('saveplayerdata.pickle', 'rb') as f:
-        m.state = pickle.load(f)
+    enemies = m.get_enemies()
+    if len(enemies) > 0:
+        print("You can not load the game if there are enemies on your field")
+    else:
+        player_pickle = open('saveplayerdata.pickle', 'rb')
+        g_class = pickle.load(player_pickle)
+        player_pickle.close()
+        map_pickle = open('savemapdata.pickle', 'rb')
+        m = pickle.load(map_pickle)
+        map_pickle.close()
+        ai_map_pickle = open('saveaimapdata.pickle', 'rb')
+        ai_m = pickle.load(ai_map_pickle)
+        ai_map_pickle.close()
+        play_loop(m, g_class, ai_m)
 
 
 def quit_game(m, g_class, ai_m):
@@ -191,35 +209,34 @@ def play_loop(m, g_class, ai_m):
         else:
             print("You run around in circles and don't know what to do.")
 
-def check_for_valid_save():
-    try:
-        saved_world = pickle.load(open("saved_world.p", "rb"))
-        saved_player = pickle.load(open("saved_player.p", "rb"))
-    except:
-        Path("saveplayerdata.pickle").unlink()
-        Path("saveworlddata.pickle").unlink()
 
 def check_for_save():
-    saved = False
-    if Path("saveplayerdata.pickle").is_file() and Path("saveworlddata.pickle").is_file():
-        while True:
-            check_load = input("Saved game found! Do you want to load the game? yes/no ").lower().strip()
-            if check_load == "yes":
-                load(m, g_class)
-                saved = True
-                break
-            elif check_load == "no":
-                Path("saveplayerdata.pickle").unlink()
-                Path("saveworlddata.pickle").unlink()
-                break
-            else:
-                print("Invalid choice.")
-        return saved
+    answer = False
+    while answer == False:
+        check_load = input("Saved game found! Do you want to load the game? yes/no ").lower().strip()
+        if check_load == "yes":
+            player_pickle = open('saveplayerdata.pickle', 'rb')
+            g_class = pickle.load(player_pickle)
+            player_pickle.close()
+            map_pickle = open('savemapdata.pickle', 'rb')
+            m = pickle.load(map_pickle)
+            map_pickle.close()
+            ai_map_pickle = open('saveaimapdata.pickle', 'rb')
+            ai_m = pickle.load(ai_map_pickle)
+            ai_map_pickle.close()
+            play_loop(m, g_class, ai_m)
+            answer = True
+        elif check_load == "no":
+            Path("saveplayerdata.pickle").unlink()
+            Path("savemapdata.pickle").unlink()
+            Path("saveaimapdata.pickle").unlink()
+            answer = True
+        else:
+            print("Invalid choice.")
 
 
 if __name__ == '__main__':
-    #saved = check_for_save()
-    #if saved:
-        #play_loop()
-    #else:
+    if Path("saveplayerdata.pickle").is_file() and Path("savemapdata.pickle").is_file() and \
+            Path("saveaimapdata.pickle").is_file():
+        check_for_save()
     choose_class()
