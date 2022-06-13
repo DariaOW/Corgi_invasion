@@ -3,6 +3,7 @@ from pygame.sprite import Sprite
 
 
 class Hearts(Sprite):
+    """A class to manage hearts for hit's limit of the Corgi."""
     def __init__(self, screen):
         super(Hearts, self).__init__()
         self.screen = screen

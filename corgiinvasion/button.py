@@ -1,10 +1,8 @@
 import pygame.font
-from dataclasses import dataclass, InitVar, field
-from typing import Any
 
 
 class Button:
-    def __init__(self, screen, message,position):
+    def __init__(self, screen, message, position):
         self.screen = screen
         self.message = message
         self.position = position
@@ -18,10 +16,12 @@ class Button:
         self.image()
 
     def image(self):
+        """Turn message into a rendered image, and center text on the button."""
         self.msg_image = self.font.render(self.message, True, self.text_color, self.button_color)
         self.msg_image_rect = self.msg_image.get_rect()
         self.msg_image_rect.center = self.rect.center
 
     def draw_button(self):
+        """ Draw blank button, then draw message. """
         self.screen.fill(self.button_color, self.rect)
         self.screen.blit(self.msg_image, self.msg_image_rect)
