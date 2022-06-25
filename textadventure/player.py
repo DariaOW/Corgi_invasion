@@ -55,14 +55,28 @@ class Jackal(Character):
         self.teammate_ad = 0
 
     def skill(self, enemies):
-        self.hp = self.hp + enemies[0].hp
-        self.ad = self.ad + enemies[0].ad
-        self.enemies_teammate += 1
-        self.shield = self.shield + enemies[0].hp
-        self.teammate_ad = enemies[0].ad
-        enemies.remove(enemies[0])
-        print(f"your teammate has {self.shield} hp, if hp is equal null he will die")
+        while True:
+            teammate = input(f"You can take {enemies[0].name} with you as a teammate. yes/no").lower().strip()
+            if teammate == "yes":
+                self.hp = self.hp + enemies[0].hp
+                self.ad = self.ad + enemies[0].ad
+                self.enemies_teammate += 1
+                self.shield = self.shield + enemies[0].hp
+                self.teammate_ad = enemies[0].ad
+                enemies.remove(enemies[0])
+                print(f"your teammate has {self.shield} hp, if hp is equal null he will die")
+                break
+            elif teammate == "no":
+                pass
+            else:
+                print("Think faster")
 
+    def teammate_dead(self):
+        self.shield = 0
+        self.enemies_teammate -= 1
+        self.ad = self.ad - self.teammate_ad
+        self.teammate_ad = 0
+        print("Your teammate is dead")
 
 class Snake(Character):
     def __init__(self):

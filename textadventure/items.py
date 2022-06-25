@@ -75,6 +75,9 @@ class Item:
             else:
                 for x in g_class.items:
                     print(f'You have {x.name, x.des}')
+        if len(g_class.mask) > 0:
+            for x in g_class.mask:
+                print(f"You take on {x.name} {x.des}")
 
     def items(self, g_class):
         self.items_in_inventory(g_class)
