@@ -7,36 +7,35 @@ import os
 from kigegner import MapForAi
 
 
-def forward(m, g_class, ai_m):
+def forward(m, g_class, ai_m, i, enemies):
     m.forward(g_class, ai_m)
 
 
-def right(m, g_class, ai_m):
+def right(m, g_class, ai_m, i, enemies):
     m.right(g_class, ai_m)
 
 
-def left(m, g_class, ai_m):
+def left(m, g_class, ai_m, i, enemies):
     m.left(g_class, ai_m)
 
 
-def backwards(m, g_class, ai_m):
+def backwards(m, g_class, ai_m, i, enemies):
     m.backwards(g_class, ai_m)
 
 
-def items(m, g_class, ai_m):
-    i = Item()
+def items(m, g_class, ai_m, i, enemies):
     i.items(g_class)
 
 
-def pickup(m, g_class, ai_m):
+def pickup(m, g_class, ai_m, i, enemies):
     loot = m.get_items()
     if len(loot) > 0:
         for x in loot:
             x.pickup(g_class, x, loot)
 
 
-def save(m, g_class, ai_m):
-    player_pickle, map_pickle,ai_map_pickle = open('saveplayerdata.pickle', 'wb'), open('savemapdata.pickle', 'wb'),\
+def save(m, g_class, ai_m, i, enemies):
+    player_pickle, map_pickle, ai_map_pickle = open('saveplayerdata.pickle', 'wb'), open('savemapdata.pickle', 'wb'),\
                                               open('saveaimapdata.pickle', 'wb')
     pickle.dump(g_class, player_pickle)
     player_pickle.close()
@@ -47,19 +46,18 @@ def save(m, g_class, ai_m):
     print("You have successfully saved!")
 
 
-def load(m, g_class, ai_m):
-    enemies = m.get_enemies()
+def load(m, g_class, ai_m, i, enemies):
     if len(enemies) > 0:
-        print("You can not load the game if there are enemies on your field")
+        return "You can not load the game if there are enemies on your field"
     else:
         start_with_load_pickle_data()
 
 
-def quit_game(m, g_class, ai_m):
+def quit_game(m, g_class, ai_m, i, enemies):
     while True:
         end = input("Would you like to save your progress? yes/no").lower().strip()
         if end == "yes":
-            save(m, g_class, ai_m)
+            save(m, g_class, ai_m, i, enemies)
             print("Thanks, Game saved!")
             exit()
         elif end == "no":
@@ -69,8 +67,8 @@ def quit_game(m, g_class, ai_m):
             continue
 
 
-def print_help(m, g_class, ai_m):
-    print(f'{" ".join(str(x) for x in Commands.keys())}')
+def print_help(m, g_class, ai_m, i, enemies):
+    return f'{" ".join(str(x) for x in Commands.keys())}'
 
 
 def use_skills(g_class, enemies, m, step):
@@ -105,8 +103,7 @@ def enemies_die(enemies, m, g_class):
         g_class.update_skill()
 
 
-def fight(m, g_class, ai_m): #refactoring
-    enemies = m.get_enemies()
+def fight(m, g_class, ai_m, i, enemies):
     if len(enemies) > 0:
         enemies[0].hp = enemies[0].hp - g_class.ad
         if enemies[0].hp <= 0:
@@ -125,8 +122,7 @@ def fight(m, g_class, ai_m): #refactoring
         print("You should not fight")
 
 
-def rest(m, g_class, ai_m):
-    enemies = m.get_enemies()
+def rest(m, g_class, ai_m, i, enemies):
     if len(enemies) > 0:
         print("You can not rest, the enemy is here ")
     else:
@@ -134,16 +130,15 @@ def rest(m, g_class, ai_m):
         print(f"Your hp is {g_class.hp}")
 
 
-def escape(m, g_class, ai_m):
+def escape(m, g_class, ai_m, i, enemies):
     m.escape(g_class)
 
 
-def stats(m, g_class, ai_m):
+def stats(m, g_class, ai_m, i, enemies):
     print(f"Your hp - {g_class.hp},\n your damage - {g_class.ad},\n you shield - {g_class.protect},\n "
           f" your inventory has {g_class.max_inventory - g_class.inv} free locations.\n")
-    i = Item()
     i.items_in_inventory(g_class)
-    if g_class == Jackal() and g_class.enemies_teammate:
+    if g_class.name == "Jackal" and g_class.enemies_teammate:
         print(f" You have {g_class.enemies_teammate} teammate/s")
 
 
@@ -188,13 +183,15 @@ def choose_class():
 
 def play_loop(m, g_class, ai_m):
     print(f"You was born as {g_class.name} and you are {g_class.skills_description}")
-    stats(m, g_class, ai_m)
+    i = Item()
+    enemies = m.get_enemies()
+    stats(m, g_class, ai_m, i)
     m.print_state()
     print("(type help to list the commands available)\n")
     while True:
         command = input(">").lower().strip().split(" ")
         if command[0] in Commands:
-            Commands[command[0]](m, g_class, ai_m)
+            Commands[command[0]](m, g_class, ai_m, i, enemies)
         else:
             print("You run around in circles and don't know what to do.")
 
@@ -231,3 +228,5 @@ if __name__ == '__main__':
             Path("saveaimapdata.pickle").is_file():
         check_for_save()
     choose_class()
+
+

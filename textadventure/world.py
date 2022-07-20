@@ -118,11 +118,12 @@ class Map:
         if self.get_enemies():
             if len(g_class.mask) > 0 and g_class.mask[0].name == "Teke Mask" and self.get_enemies()[0].name == "Impundulu": ## mal gucken
                 return False
-            if g_class.name == "Jackrabbit":
+            elif g_class.name == "Jackrabbit":
                 r = random.random()
                 if r < 0.70:
                     return False
-            return True
+            else:
+                return True
         else:
             return False
 
