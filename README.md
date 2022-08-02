@@ -10,7 +10,7 @@ If the crab strikes the Corgi the player loses a heart. The player loses the gam
 
 Clone this project into your machine. If you have not a pygame, install pygame module globally.
 ```
-git clone 
+git clone https://github.com/DariaOW/Corgi_invasion.git
 pip install pygame
 ```
 And enter project and run the driver file
